@@ -1,0 +1,17 @@
+<script>
+const cards = document.querySelectorAll(".glass-card");
+
+window.addEventListener("scroll", () => {
+  let trigger = window.innerHeight / 2;
+
+  cards.forEach(card => {
+    let rect = card.getBoundingClientRect();
+
+    if (rect.left < trigger && rect.right > trigger) {
+      card.classList.add("active");
+    } else {
+      card.classList.remove("active");
+    }
+  });
+});
+</script>
