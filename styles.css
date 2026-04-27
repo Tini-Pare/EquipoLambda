@@ -6,7 +6,8 @@
 }
 
 body {
-  background-color: #efefef; /* Un blanco suave que no cansa la vista */
+  background-color: #efefef;
+  /* Un blanco suave que no cansa la vista */
   color: #333;
 }
 
@@ -29,7 +30,8 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 160%; /* Extiende más abajo para suavizar el corte */
+  height: 160%;
+  /* Extiende más abajo para suavizar el corte */
   z-index: -1;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
   backdrop-filter: blur(10px);
@@ -146,7 +148,8 @@ body {
 }
 
 .info p {
-  font-family: 'Inter', sans-serif; /* o Lexend si preferís */
+  font-family: 'Inter', sans-serif;
+  /* o Lexend si preferís */
   font-size: 2rem;
   font-weight: 400;
   color: #6e6e6e;
@@ -204,14 +207,18 @@ body {
 .cards-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* Para que no estén tan a la izquierda */
-  gap: 10vh; /* Más juntas */
-  padding: 50vh 0; /* Padding para que la primera y última tarjeta lleguen al centro */
+  align-items: flex-end;
+  /* Para que no estén tan a la izquierda */
+  gap: 10vh;
+  /* Más juntas */
+  padding: 50vh 0;
+  /* Padding para que la primera y última tarjeta lleguen al centro */
 }
 
 /* GLASS CARD */
 .glass-card {
-  width: 450px; /* Más grandes y anchas */
+  width: 450px;
+  /* Más grandes y anchas */
   height: 280px;
   padding: 35px;
 
@@ -229,14 +236,17 @@ body {
   transition: all 0.5s ease;
   transform: scale(0.85);
   opacity: 0.4;
-  filter: blur(5px); /* Desenfocadas cuando no son principales */
+  filter: blur(5px);
+  /* Desenfocadas cuando no son principales */
 }
 
 /* CARD ACTIVA */
 .glass-card.active {
-  transform: scale(1.05); /* Escala sutilmente mayor */
+  transform: scale(1.05);
+  /* Escala sutilmente mayor */
   opacity: 1;
-  filter: blur(0); /* Nítidas al ser principales */
+  filter: blur(0);
+  /* Nítidas al ser principales */
 }
 
 /* Card Grid Content List */
@@ -258,18 +268,23 @@ body {
   order: 5;
   align-self: stretch;
   flex-grow: 0;
-  
-  border-radius: 30px; /* Añadido para mantener estilo */
+
+  border-radius: 30px;
+  /* Añadido para mantener estilo */
 }
+
 /* SECCIÓN GENERAL */
 .team {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding: 150px 64px; /* Mayor padding vertical */
-  gap: 60px; /* Un poco más de espacio entre el título y la lista */
-  min-height: 80vh; /* Para asegurar que ocupe buen espacio en pantalla */
+  padding: 150px 64px;
+  /* Mayor padding vertical */
+  gap: 60px;
+  /* Un poco más de espacio entre el título y la lista */
+  min-height: 80vh;
+  /* Para asegurar que ocupe buen espacio en pantalla */
 
   max-width: 1200px;
   margin: 0 auto;
@@ -339,6 +354,7 @@ body {
   line-height: 1.5;
   max-width: 600px;
 }
+
 .footer {
   display: flex;
   justify-content: space-between;
