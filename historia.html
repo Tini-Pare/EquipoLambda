@@ -56,6 +56,40 @@
     </div>
   </section>
 
+  <!-- GALERÍA SCROLL -->
+  <section id="galeria-circular">
+    <div class="gallery-sticky">
+      <div class="gallery-layout">
+
+        <!-- LEFT: texto dinámico -->
+        <div class="gallery-left">
+          <span class="gallery-eyebrow">Nuestra Galería</span>
+          <h2 id="g-title">Inicio del Proyecto</h2>
+          <p id="g-desc">Los primeros pasos del equipo Lambda hacia el desarrollo de tecnología satelital educativa.</p>
+          <div class="gallery-meta">
+            <span id="g-current">01</span>
+            <div class="gallery-progress-track">
+              <div id="g-bar"></div>
+            </div>
+            <span class="g-total">08</span>
+          </div>
+          <div class="gallery-dots" id="g-dots"></div>
+        </div>
+
+        <!-- RIGHT: imagen + bloom -->
+        <div class="gallery-right">
+          <div class="gallery-frame-wrap">
+            <div class="gallery-frame">
+              <img id="g-img" src="https://picsum.photos/400/580?random=1" alt="Foto 1">
+            </div>
+            <div class="gallery-bloom" id="g-bloom"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <section class="historia-block split reverse">
     <div class="text">
       <h2>Nuestra historia</h2>
@@ -128,6 +162,142 @@
     </div>
 
   </footer>
+
+  <script>
+  (function () {
+    const slides = [
+      {
+        title: "Inicio del Proyecto",
+        desc:  "Los primeros pasos del equipo Lambda hacia el desarrollo de tecnología satelital educativa.",
+        img:   "https://picsum.photos/400/580?random=1",
+        color: "rgba(80,80,255,0.65)"
+      },
+      {
+        title: "Diseño del CubeSat",
+        desc:  "Definimos la arquitectura del satélite: estructura, peso y distribución de componentes.",
+        img:   "https://picsum.photos/400/580?random=2",
+        color: "rgba(110,50,230,0.65)"
+      },
+      {
+        title: "Hardware y Electrónica",
+        desc:  "Diseño de la PCB que integra los sistemas de control, telemetría y alimentación.",
+        img:   "https://picsum.photos/400/580?random=3",
+        color: "rgba(50,130,255,0.65)"
+      },
+      {
+        title: "Sensores de Medición",
+        desc:  "Integración de sensores de CO₂, temperatura, presión y humedad relativa.",
+        img:   "https://picsum.photos/400/580?random=4",
+        color: "rgba(30,180,200,0.65)"
+      },
+      {
+        title: "Software Embebido",
+        desc:  "Programación del firmware para adquisición y transmisión de datos en tiempo real.",
+        img:   "https://picsum.photos/400/580?random=5",
+        color: "rgba(60,210,140,0.65)"
+      },
+      {
+        title: "Testing y Validación",
+        desc:  "Pruebas en laboratorio que simulan las condiciones extremas de la estratósfera.",
+        img:   "https://picsum.photos/400/580?random=6",
+        color: "rgba(210,140,40,0.65)"
+      },
+      {
+        title: "Presentación Oficial",
+        desc:  "El equipo Lambda presenta el CubeSat ante el jurado del concurso UTN.",
+        img:   "https://picsum.photos/400/580?random=7",
+        color: "rgba(230,70,100,0.65)"
+      },
+      {
+        title: "Equipo Lambda",
+        desc:  "El equipo detrás del proyecto: estudiantes comprometidos con la exploración espacial.",
+        img:   "https://picsum.photos/400/580?random=8",
+        color: "rgba(160,70,255,0.65)"
+      }
+    ];
+
+    const section  = document.getElementById('galeria-circular');
+    const gTitle   = document.getElementById('g-title');
+    const gDesc    = document.getElementById('g-desc');
+    const gImg     = document.getElementById('g-img');
+    const gCurrent = document.getElementById('g-current');
+    const gBar     = document.getElementById('g-bar');
+    const gBloom   = document.getElementById('g-bloom');
+    const dotsWrap = document.getElementById('g-dots');
+
+    /* Crear dots */
+    slides.forEach(function (_, i) {
+      const dot = document.createElement('div');
+      dot.className = 'g-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', function () { scrollToSlide(i); });
+      dotsWrap.appendChild(dot);
+    });
+
+    function scrollToSlide(index) {
+      const sectionTop = section.offsetTop;
+      const scrollable = section.offsetHeight - window.innerHeight;
+      const target     = sectionTop + (index / slides.length) * scrollable;
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    }
+
+    let currentIndex = -1;
+    let fadeTimer    = null;
+
+    function updateSlide(index, withinProgress) {
+      /* progress bar */
+      const global = (index + withinProgress) / slides.length;
+      gBar.style.width = (global * 100) + '%';
+      gCurrent.textContent = String(index + 1).padStart(2, '0');
+
+      /* dots */
+      dotsWrap.querySelectorAll('.g-dot').forEach(function (dot, i) {
+        dot.classList.toggle('active', i === index);
+      });
+
+      if (index === currentIndex) return;
+      currentIndex = index;
+
+      const slide = slides[index];
+
+      /* fade out */
+      gImg.classList.add('fade-out');
+      gTitle.style.opacity = '0';
+      gDesc.style.opacity  = '0';
+
+      clearTimeout(fadeTimer);
+      fadeTimer = setTimeout(function () {
+        gImg.src            = slide.img;
+        gTitle.textContent  = slide.title;
+        gDesc.textContent   = slide.desc;
+        gBloom.style.background =
+          'radial-gradient(ellipse, ' + slide.color + ' 0%, transparent 70%)';
+
+        gImg.classList.remove('fade-out');
+        gTitle.style.opacity = '1';
+        gDesc.style.opacity  = '1';
+      }, 380);
+    }
+
+    window.addEventListener('scroll', function () {
+      const sectionTop = section.offsetTop;
+      const stickyH    = window.innerHeight;
+      const scrollable = section.offsetHeight - stickyH;
+      const scrolled   = Math.max(0, window.scrollY - sectionTop);
+
+      if (scrolled > scrollable) return;
+
+      const progress       = Math.min(scrolled / scrollable, 0.9999);
+      const slideFloat     = progress * slides.length;
+      const index          = Math.min(Math.floor(slideFloat), slides.length - 1);
+      const withinProgress = slideFloat - index;
+
+      updateSlide(index, withinProgress);
+    });
+
+    /* Inicializar slide 0 */
+    updateSlide(0, 0);
+  })();
+  </script>
 
 </body>
 </html>
