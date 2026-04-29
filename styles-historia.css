@@ -145,18 +145,30 @@
 .gallery-layout {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 100px;
+  justify-content: space-between; /* Texto izquierda, Carrusel derecha */
   width: 100%;
-  max-width: 1100px;
-  padding: 0 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 50px;
 }
 
-/* ── LEFT: texto ── */
 .gallery-left {
-  flex: 1;
-  max-width: 380px;
-  color: #fff;
+  flex: 0 0 400px; /* Ancho fijo para el texto */
+  z-index: 10;
+}
+
+.gallery-right {
+  flex: 1; /* El carrusel ocupa el resto del espacio */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 2000px; /* Perspectiva alta para evitar deformación tosca */
+}
+.gallery-stage {
+  position: relative;
+  width: 400px; /* Ancho de la zona de fotos */
+  height: 500px;
+  transform-style: preserve-3d;
 }
 
 .gallery-eyebrow {
@@ -262,23 +274,22 @@
 }
 
 .gallery-stage {
-  position: relative;
-  perspective: 900px;
-  perspective-origin: center center;
-  width: 640px;
-  height: 440px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    perspective: 1500px; /* Profundidad de visión[cite: 6] */
+    transform-style: preserve-3d; /* Permite el giro 3D real[cite: 6] */
+    width: 100%;
+    height: 600px;
 }
 
-/* Slot base */
 .g-slot {
-  position: absolute;
-  border-radius: 18px;
-  overflow: hidden;
-  will-change: transform, filter, opacity;
+    position: absolute;
+    /* Esto hace que la imagen gire alrededor del centro del stage[cite: 6] */
+    transform-origin: center center -500px; 
+    will-change: transform, opacity;
+    transition: none !important; /* Evita conflictos con el JS[cite: 6] */
 }
+
+/* Ajuste para que la imagen central no se desfase por su propio ancho[cite: 6] */
 
 .g-slot img {
   width: 100%;
@@ -287,7 +298,13 @@
   display: block;
   transition: opacity 0.35s ease;
 }
-
+.g-slot {
+  position: absolute;
+  border-radius: 18px;
+  overflow: hidden;
+  will-change: transform, opacity; /* Ayuda al rendimiento */
+  transition: opacity 0.3s ease; /* Solo para el fade inicial si quieres */
+  }
 /* Slot PREV — izquierda, atrás, desenfocado */
 .g-slot-prev {
   width: 185px;
@@ -311,6 +328,7 @@
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.08),
     0 30px 80px rgba(0,0,0,0.8);
+  margin-left: -135px; /* Mitad de su ancho (270px / 2)[cite: 6] */
 }
 
 /* Slot NEXT — derecha, atrás, desenfocado */
