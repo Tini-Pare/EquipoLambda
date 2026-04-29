@@ -76,11 +76,13 @@
           <div class="gallery-dots" id="g-dots"></div>
         </div>
 
-        <!-- RIGHT: imagen + bloom -->
+        <!-- RIGHT: stage 3D con prev / curr / next -->
         <div class="gallery-right">
-          <div class="gallery-frame-wrap">
-            <div class="gallery-frame">
-              <img id="g-img" src="https://picsum.photos/400/580?random=1" alt="Foto 1">
+          <div class="gallery-stage-wrap">
+            <div class="gallery-stage">
+              <div class="g-slot g-slot-prev" id="g-slot-prev"></div>
+              <div class="g-slot g-slot-curr" id="g-slot-curr"></div>
+              <div class="g-slot g-slot-next" id="g-slot-next"></div>
             </div>
             <div class="gallery-bloom" id="g-bloom"></div>
           </div>
@@ -165,137 +167,140 @@
 
   <script>
   (function () {
-    const slides = [
-      {
-        title: "Inicio del Proyecto",
-        desc:  "Los primeros pasos del equipo Lambda hacia el desarrollo de tecnología satelital educativa.",
-        img:   "https://picsum.photos/400/580?random=1",
-        color: "rgba(80,80,255,0.65)"
-      },
-      {
-        title: "Diseño del CubeSat",
-        desc:  "Definimos la arquitectura del satélite: estructura, peso y distribución de componentes.",
-        img:   "https://picsum.photos/400/580?random=2",
-        color: "rgba(110,50,230,0.65)"
-      },
-      {
-        title: "Hardware y Electrónica",
-        desc:  "Diseño de la PCB que integra los sistemas de control, telemetría y alimentación.",
-        img:   "https://picsum.photos/400/580?random=3",
-        color: "rgba(50,130,255,0.65)"
-      },
-      {
-        title: "Sensores de Medición",
-        desc:  "Integración de sensores de CO₂, temperatura, presión y humedad relativa.",
-        img:   "https://picsum.photos/400/580?random=4",
-        color: "rgba(30,180,200,0.65)"
-      },
-      {
-        title: "Software Embebido",
-        desc:  "Programación del firmware para adquisición y transmisión de datos en tiempo real.",
-        img:   "https://picsum.photos/400/580?random=5",
-        color: "rgba(60,210,140,0.65)"
-      },
-      {
-        title: "Testing y Validación",
-        desc:  "Pruebas en laboratorio que simulan las condiciones extremas de la estratósfera.",
-        img:   "https://picsum.photos/400/580?random=6",
-        color: "rgba(210,140,40,0.65)"
-      },
-      {
-        title: "Presentación Oficial",
-        desc:  "El equipo Lambda presenta el CubeSat ante el jurado del concurso UTN.",
-        img:   "https://picsum.photos/400/580?random=7",
-        color: "rgba(230,70,100,0.65)"
-      },
-      {
-        title: "Equipo Lambda",
-        desc:  "El equipo detrás del proyecto: estudiantes comprometidos con la exploración espacial.",
-        img:   "https://picsum.photos/400/580?random=8",
-        color: "rgba(160,70,255,0.65)"
-      }
+
+    /* ── Datos ── */
+    var slides = [
+      { title: "Inicio del Proyecto",    desc: "Los primeros pasos del equipo Lambda hacia el desarrollo de tecnología satelital educativa.",    img: "https://picsum.photos/400/580?random=1", color: "rgba(80,80,255,0.65)"   },
+      { title: "Diseño del CubeSat",     desc: "Definimos la arquitectura del satélite: estructura, peso y distribución de componentes.",           img: "https://picsum.photos/400/580?random=2", color: "rgba(110,50,230,0.65)"  },
+      { title: "Hardware y Electrónica", desc: "Diseño de la PCB que integra los sistemas de control, telemetría y alimentación.",               img: "https://picsum.photos/400/580?random=3", color: "rgba(50,130,255,0.65)"  },
+      { title: "Sensores de Medición",   desc: "Integración de sensores de CO₂, temperatura, presión y humedad relativa.",                         img: "https://picsum.photos/400/580?random=4", color: "rgba(30,180,200,0.65)"  },
+      { title: "Software Embebido",      desc: "Programación del firmware para adquisición y transmisión de datos en tiempo real.",                 img: "https://picsum.photos/400/580?random=5", color: "rgba(60,210,140,0.65)"  },
+      { title: "Testing y Validación",   desc: "Pruebas en laboratorio que simulan las condiciones extremas de la estratósfera.",                  img: "https://picsum.photos/400/580?random=6", color: "rgba(210,140,40,0.65)"  },
+      { title: "Presentación Oficial",   desc: "El equipo Lambda presenta el CubeSat ante el jurado del concurso UTN.",                            img: "https://picsum.photos/400/580?random=7", color: "rgba(230,70,100,0.65)"  },
+      { title: "Equipo Lambda",          desc: "El equipo detrás del proyecto: estudiantes comprometidos con la exploración espacial.",           img: "https://picsum.photos/400/580?random=8", color: "rgba(160,70,255,0.65)"  }
     ];
 
-    const section  = document.getElementById('galeria-circular');
-    const gTitle   = document.getElementById('g-title');
-    const gDesc    = document.getElementById('g-desc');
-    const gImg     = document.getElementById('g-img');
-    const gCurrent = document.getElementById('g-current');
-    const gBar     = document.getElementById('g-bar');
-    const gBloom   = document.getElementById('g-bloom');
-    const dotsWrap = document.getElementById('g-dots');
+    /* ── DOM ── */
+    var section  = document.getElementById('galeria-circular');
+    var slotPrev = document.getElementById('g-slot-prev');
+    var slotCurr = document.getElementById('g-slot-curr');
+    var slotNext = document.getElementById('g-slot-next');
+    var gTitle   = document.getElementById('g-title');
+    var gDesc    = document.getElementById('g-desc');
+    var gBar     = document.getElementById('g-bar');
+    var gCurrent = document.getElementById('g-current');
+    var gBloom   = document.getElementById('g-bloom');
+    var dotsWrap = document.getElementById('g-dots');
 
-    /* Crear dots */
+    /* ── Altura dinámica: 1 viewport por slide ── */
+    section.style.height = (window.innerHeight * (slides.length + 1)) + 'px';
+
+    /* ── Dots ── */
     slides.forEach(function (_, i) {
-      const dot = document.createElement('div');
+      var dot = document.createElement('div');
       dot.className = 'g-dot' + (i === 0 ? ' active' : '');
       dot.addEventListener('click', function () { scrollToSlide(i); });
       dotsWrap.appendChild(dot);
     });
 
-    function scrollToSlide(index) {
-      const sectionTop = section.offsetTop;
-      const scrollable = section.offsetHeight - window.innerHeight;
-      const target     = sectionTop + (index / slides.length) * scrollable;
-      window.scrollTo({ top: target, behavior: 'smooth' });
+    function scrollToSlide(i) {
+      var scrollable = section.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: section.offsetTop + (i / slides.length) * scrollable, behavior: 'smooth' });
     }
 
-    let currentIndex = -1;
-    let fadeTimer    = null;
+    /* ── Estado ── */
+    var lastIndex = -1;
+    var fadeTimer = null;
 
-    function updateSlide(index, withinProgress) {
-      /* progress bar */
-      const global = (index + withinProgress) / slides.length;
-      gBar.style.width = (global * 100) + '%';
+    /* ── Transforms por scroll (sin CSS transition, directo al pixel) ──
+       e = ease in-out cuadrático de t (0..1)
+       PREV  gira más a la izq y desaparece
+       CURR  se aleja y rota hacia prev
+       NEXT  avanza desde la derecha al frente                         ── */
+    function applyTransforms(t) {
+      var e = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+      slotPrev.style.transform = 'rotateY(' + (42 + e * 22) + 'deg) translateZ(-60px) scale(0.92)';
+      slotPrev.style.filter    = 'blur(' + (3.5 + e * 2.5) + 'px) brightness(' + (0.4 - e * 0.32) + ')';
+      slotPrev.style.opacity   = Math.max(0, 0.65 - e * 0.6);
+
+      var cRY = e * 20;
+      var cSc = 1 - e * 0.12;
+      var cBl = e * 3.5;
+      slotCurr.style.transform = 'translateX(-50%) rotateY(' + cRY + 'deg) translateZ(0px) scale(' + cSc + ')';
+      slotCurr.style.filter    = cBl > 0.05 ? 'blur(' + cBl + 'px) brightness(' + (1 - e * 0.55) + ')' : 'none';
+      slotCurr.style.opacity   = 1 - e * 0.35;
+
+      var nRY = 42 - e * 42;
+      var nSc = 0.92 + e * 0.08;
+      var nBl = Math.max(0, 3.5 - e * 3.5);
+      slotNext.style.transform = 'rotateY(-' + nRY + 'deg) translateZ(' + (e * 60 - 60) + 'px) scale(' + nSc + ')';
+      slotNext.style.filter    = nBl > 0.05 ? 'blur(' + nBl + 'px) brightness(' + (0.4 + e * 0.62) + ')' : 'none';
+      slotNext.style.opacity   = 0.65 + e * 0.35;
+    }
+
+    /* ── Actualiza texto/dots (solo cuando cambia el índice) ── */
+    function onIndexChange(index) {
+      lastIndex = index;
+      var slide = slides[index];
+
+      dotsWrap.querySelectorAll('.g-dot').forEach(function (d, i) {
+        d.classList.toggle('active', i === index);
+      });
       gCurrent.textContent = String(index + 1).padStart(2, '0');
 
-      /* dots */
-      dotsWrap.querySelectorAll('.g-dot').forEach(function (dot, i) {
-        dot.classList.toggle('active', i === index);
-      });
-
-      if (index === currentIndex) return;
-      currentIndex = index;
-
-      const slide = slides[index];
-
-      /* fade out */
-      gImg.classList.add('fade-out');
       gTitle.style.opacity = '0';
       gDesc.style.opacity  = '0';
 
       clearTimeout(fadeTimer);
       fadeTimer = setTimeout(function () {
-        gImg.src            = slide.img;
-        gTitle.textContent  = slide.title;
-        gDesc.textContent   = slide.desc;
-        gBloom.style.background =
-          'radial-gradient(ellipse, ' + slide.color + ' 0%, transparent 70%)';
-
-        gImg.classList.remove('fade-out');
+        gTitle.textContent = slide.title;
+        gDesc.textContent  = slide.desc;
+        gBloom.style.background = 'radial-gradient(ellipse, ' + slide.color + ' 0%, transparent 70%)';
         gTitle.style.opacity = '1';
         gDesc.style.opacity  = '1';
-      }, 380);
+      }, 220);
     }
 
+    /* ── Listener de scroll ── */
     window.addEventListener('scroll', function () {
-      const sectionTop = section.offsetTop;
-      const stickyH    = window.innerHeight;
-      const scrollable = section.offsetHeight - stickyH;
-      const scrolled   = Math.max(0, window.scrollY - sectionTop);
+      var rect       = section.getBoundingClientRect();
+      var scrollable = section.offsetHeight - window.innerHeight;
+      var scrolled   = -rect.top;
 
-      if (scrolled > scrollable) return;
+      if (scrolled < 0 || scrolled > scrollable + 20) return;
 
-      const progress       = Math.min(scrolled / scrollable, 0.9999);
-      const slideFloat     = progress * slides.length;
-      const index          = Math.min(Math.floor(slideFloat), slides.length - 1);
-      const withinProgress = slideFloat - index;
+      var progress   = Math.min(1, Math.max(0, scrolled / scrollable));
+      var slideFloat = progress * slides.length;
+      var index      = Math.min(Math.floor(slideFloat), slides.length - 1);
+      var t          = slideFloat - index;
 
-      updateSlide(index, withinProgress);
-    });
+      /* Barra continua */
+      gBar.style.width = (progress * 100) + '%';
 
-    /* Inicializar slide 0 */
-    updateSlide(0, 0);
+      /* Imágenes: innerHTML en cada tick — robusto, sin referencias obsoletas */
+      var prevIdx = (index - 1 + slides.length) % slides.length;
+      var nextIdx = (index + 1) % slides.length;
+      slotPrev.innerHTML = '<img src="' + slides[prevIdx].img + '" alt="">';
+      slotCurr.innerHTML = '<img src="' + slides[index].img   + '" alt="">';
+      slotNext.innerHTML = '<img src="' + slides[nextIdx].img + '" alt="">';
+
+      /* Transforms: directo por scroll, sin lag */
+      applyTransforms(t);
+
+      /* Texto: solo cuando cambia el slide */
+      if (index !== lastIndex) onIndexChange(index);
+
+    }, { passive: true });
+
+    /* ── Init ── */
+    var n = slides.length;
+    slotPrev.innerHTML = '<img src="' + slides[n - 1].img + '" alt="">';
+    slotCurr.innerHTML = '<img src="' + slides[0].img     + '" alt="">';
+    slotNext.innerHTML = '<img src="' + slides[1].img     + '" alt="">';
+    applyTransforms(0);
+    onIndexChange(0);
+
   })();
   </script>
 

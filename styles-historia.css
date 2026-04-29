@@ -247,53 +247,91 @@
   transform: scale(1.45);
 }
 
-/* ── RIGHT: imagen ── */
+/* ── RIGHT: stage 3D ── */
 .gallery-right {
   flex: 0 0 auto;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-.gallery-frame-wrap {
-  position: relative;
+.gallery-stage-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.gallery-frame {
-  width: 300px;
-  height: 430px;
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.07),
-    0 40px 100px rgba(0,0,0,0.75);
+.gallery-stage {
   position: relative;
-  z-index: 2;
+  perspective: 900px;
+  perspective-origin: center center;
+  width: 640px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.gallery-frame img {
+/* Slot base */
+.g-slot {
+  position: absolute;
+  border-radius: 18px;
+  overflow: hidden;
+  will-change: transform, filter, opacity;
+}
+
+.g-slot img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.4s ease, transform 0.6s ease;
+  display: block;
+  transition: opacity 0.35s ease;
 }
 
-.gallery-frame img.fade-out {
-  opacity: 0;
-  transform: scale(1.05);
+/* Slot PREV — izquierda, atrás, desenfocado */
+.g-slot-prev {
+  width: 185px;
+  height: 280px;
+  left: 20px;
+  transform: rotateY(42deg) translateZ(-60px) scale(0.92);
+  filter: blur(3.5px) brightness(0.4);
+  opacity: 0.65;
+  z-index: 1;
 }
 
-/* Glow / bloom debajo de la imagen */
+/* Slot CURR — centro, frente, nítido */
+.g-slot-curr {
+  width: 270px;
+  height: 390px;
+  left: 50%;
+  transform: translateX(-50%) rotateY(0deg) translateZ(0px) scale(1);
+  filter: none;
+  opacity: 1;
+  z-index: 3;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 30px 80px rgba(0,0,0,0.8);
+}
+
+/* Slot NEXT — derecha, atrás, desenfocado */
+.g-slot-next {
+  width: 185px;
+  height: 280px;
+  right: 20px;
+  transform: rotateY(-42deg) translateZ(-60px) scale(0.92);
+  filter: blur(3.5px) brightness(0.4);
+  opacity: 0.65;
+  z-index: 1;
+}
+
+/* Glow / bloom debajo del stage */
 .gallery-bloom {
-  width: 220px;
-  height: 56px;
+  width: 260px;
+  height: 60px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(100,80,255,0.65) 0%, transparent 70%);
-  filter: blur(20px);
-  margin-top: -18px;
+  filter: blur(22px);
+  margin-top: -22px;
   position: relative;
   z-index: 1;
   transition: background 0.5s ease;
