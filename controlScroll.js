@@ -51,22 +51,34 @@ document.addEventListener('DOMContentLoaded', function() {
     var pRot = -anguloMax - (e * anguloMax);
     slotPrev.style.transform = 'rotateY(' + pRot + 'deg) translateZ(' + (-radio) + 'px)';
     slotPrev.style.opacity = Math.max(0, 0.4 - e * 0.4);
-    slotPrev.style.filter = 'blur(4px)';
+    slotPrev.style.filter = 'blur(4px) brightness(0.4)';
+    slotPrev.style.zIndex = 1;
 
     // Slot CURR (La principal que gira hacia la izquierda)
-    // El translateZ(0) la mantiene al frente cuando e=0
     var cRot = -(e * anguloMax);
     var cZ = -(e * radio); 
     slotCurr.style.transform = 'rotateY(' + cRot + 'deg) translateZ(' + cZ + 'px)';
-    slotCurr.style.opacity = 1 - (e * 0.5);
-    slotCurr.style.filter = 'none';
+    slotCurr.style.opacity = 1 - (e * 0.6);
+    var cBlur = e * 4;
+    var cBright = 1 - (e * 0.6);
+    slotCurr.style.filter = 'blur(' + cBlur + 'px) brightness(' + cBright + ')';
 
     // Slot NEXT (Viene desde atrás a la derecha hacia el frente)
     var nRot = anguloMax - (e * anguloMax);
     var nZ = -radio + (e * radio);
     slotNext.style.transform = 'rotateY(' + nRot + 'deg) translateZ(' + nZ + 'px)';
     slotNext.style.opacity = 0.4 + (e * 0.6);
-    slotNext.style.filter = e > 0.8 ? 'none' : 'blur(4px)';
+    var nBlur = (1 - e) * 4;
+    var nBright = 0.4 + (e * 0.6);
+    slotNext.style.filter = 'blur(' + nBlur + 'px) brightness(' + nBright + ')';
+
+    if (e > 0.5) {
+        slotNext.style.zIndex = 3;
+        slotCurr.style.zIndex = 2;
+    } else {
+        slotNext.style.zIndex = 2;
+        slotCurr.style.zIndex = 3;
+    }
 }
 
         function updateContent(index) {
@@ -90,7 +102,13 @@ document.addEventListener('DOMContentLoaded', function() {
             var scrolled = -rect.top;
 
             var progress = Math.min(1, Math.max(0, scrolled / scrollable));
-            var slideFloat = progress * (slides.length - 1);
+            
+            // Añadimos un pequeño margen (buffer) al final para asegurar que se llegue 
+            // a la última imagen antes de que se acabe el scroll de la sección.
+            var buffer = 0.06; 
+            var adjustedProgress = Math.min(1, progress / (1 - buffer));
+
+            var slideFloat = adjustedProgress * (slides.length - 1);
             var index = Math.floor(slideFloat);
             var t = slideFloat - index;
 
@@ -104,7 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
             slotNext.innerHTML = '<img src="' + slides[nextIdx].img + '">';
 
             applyTransforms(t);
-            updateContent(index);
+            
+            // Usamos Math.round para el texto y los puntos, así el contenido cambia
+            // cuando la siguiente imagen ya domina la mitad de la transición.
+            updateContent(Math.round(slideFloat));
         }, { passive: true });
     })();
 });

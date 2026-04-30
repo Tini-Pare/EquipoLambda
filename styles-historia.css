@@ -307,13 +307,17 @@
   }
 /* Slot PREV — izquierda, atrás, desenfocado */
 .g-slot-prev {
-  width: 185px;
-  height: 280px;
-  left: 20px;
-  transform: rotateY(42deg) translateZ(-60px) scale(0.92);
-  filter: blur(3.5px) brightness(0.4);
-  opacity: 0.65;
+  width: 270px;
+  height: 390px;
+  left: 50%;
+  top: 50%;
+  margin-left: -135px;
+  margin-top: -195px;
+  transform: rotateY(-50deg) translateZ(-450px);
+  filter: blur(4px) brightness(0.4);
+  opacity: 0.4;
   z-index: 1;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 30px 80px rgba(0,0,0,0.8);
 }
 
 /* Slot CURR — centro, frente, nítido */
@@ -321,25 +325,31 @@
   width: 270px;
   height: 390px;
   left: 50%;
-  transform: translateX(-50%) rotateY(0deg) translateZ(0px) scale(1);
+  top: 50%;
+  margin-left: -135px;
+  margin-top: -195px;
+  transform: rotateY(0deg) translateZ(0px);
   filter: none;
   opacity: 1;
   z-index: 3;
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.08),
     0 30px 80px rgba(0,0,0,0.8);
-  margin-left: -135px; /* Mitad de su ancho (270px / 2)[cite: 6] */
 }
 
 /* Slot NEXT — derecha, atrás, desenfocado */
 .g-slot-next {
-  width: 185px;
-  height: 280px;
-  right: 20px;
-  transform: rotateY(-42deg) translateZ(-60px) scale(0.92);
-  filter: blur(3.5px) brightness(0.4);
-  opacity: 0.65;
-  z-index: 1;
+  width: 270px;
+  height: 390px;
+  left: 50%;
+  top: 50%;
+  margin-left: -135px;
+  margin-top: -195px;
+  transform: rotateY(50deg) translateZ(-450px);
+  filter: blur(4px) brightness(0.4);
+  opacity: 0.4;
+  z-index: 2;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 30px 80px rgba(0,0,0,0.8);
 }
 
 /* Glow / bloom debajo del stage */
@@ -349,7 +359,7 @@
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(100,80,255,0.65) 0%, transparent 70%);
   filter: blur(22px);
-  margin-top: -22px;
+  margin-top: -130px; /* Ajustado para quedar justo debajo de las fotos centradas */
   position: relative;
   z-index: 1;
   transition: background 0.5s ease;
