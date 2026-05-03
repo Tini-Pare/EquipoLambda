@@ -6,7 +6,13 @@
   --text-muted: #666;
   --text-white: #f3f3f3;
   --bg-light: #efefef;
-  --accent: #5050ff;
+  --accent: rgb(65, 156, 241);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lexend', sans-serif;
 }
 
 @keyframes fadeInUp {
@@ -22,6 +28,7 @@
 }
 
 body {
+  font-family: 'Lexend', sans-serif;
   background-color: var(--bg-light);
   color: var(--text-main);
   overflow-x: hidden;
@@ -41,8 +48,20 @@ body {
     url("nasa2.jpg") no-repeat center center / cover;
   color: var(--text-white);
   padding: 0 20px;
+  margin-bottom: 30px;
 }
 
+/* Degradado hacia el fondo blanco */
+.mision-hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(to bottom, transparent, #f3f3f3);
+  pointer-events: none;
+}
 .mision-hero h1 {
   font-size: clamp(3rem, 10vw, 5rem);
   font-weight: 700;
@@ -220,6 +239,14 @@ body {
 .mision-vision h2 {
   font-size: clamp(2.5rem, 6vw, 4rem);
   margin-bottom: 20px;
+}
+.glass-card h4 {
+  font-size: 1.2rem;
+  opacity: 0.7;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-left: 0%;
+  color: rgb(65, 156, 241)
 }
 
 .mision-vision p {
